@@ -1,1 +1,62 @@
-_G.I=_G.I or{};_G.S=_G.S or{P={["Ignore Me"]=true,["Ignore Others"]=true,["Ignore Tools"]=true},M={NoMesh=false,NoTexture=false,Destroy=false},I={Invisible=true,Destroy=false},E={Smaller=true,Invisible=false,Destroy=false},Pa={Invisible=true,Destroy=false},T={LowerQuality=false,Invisible=false,Destroy=false},MP={LowerQuality=true,Invisible=false,NoTexture=false,NoMesh=false,Destroy=false},O={["FPS Cap"]=true,["No Camera Effects"]=true,["No Clothes"]=true,["Low Water Graphics"]=true,["No Shadows"]=true,["Low Rendering"]=true,["Low Quality Parts"]=true,["Low Quality Models"]=true,["Reset Materials"]=true,["Lower Quality MeshParts"]=true,ClearNilInstances=false}};repeat task.wait()until game:IsLoaded();local p,l,m=game:GetService("Players"),game:GetService("Lighting"),game:GetService("MaterialService");local lp=p.LocalPlayer;local c={"ParticleEmitter","Trail","Smoke","Fire","Sparkles"};local function f(i)if i:IsDescendantOf(p)then return false end;if _G.S.P["Ignore Others"] and i:FindFirstAncestorWhichIsA("Model") and p:GetPlayerFromCharacter(i:FindFirstAncestorWhichIsA("Model")) then return false end;if _G.S.P["Ignore Me"] and lp.Character and i:IsDescendantOf(lp.Character) then return false end;if _G.S.P["Ignore Tools"] and (i:IsA("BackpackItem") or i:FindFirstAncestorWhichIsA("BackpackItem")) then return false end;for _,v in pairs(_G.I) do if i:IsDescendantOf(v) then return false end end;return true end;local function d(i)if not f(i) then return end;local s=_G.S;if i:IsA("DataModelMesh") then if i:IsA("SpecialMesh") then if s.M.NoMesh then i.MeshId="" end;if s.M.NoTexture then i.TextureId="" end end;if s.M.Destroy then i:Destroy() end elseif i:IsA("FaceInstance") then if s.I.Invisible then i.Transparency=1 end;if s.I.Destroy then i:Destroy() end elseif i:IsA("ShirtGraphic") then if s.I.Invisible then i.Graphic="" end;if s.I.Destroy then i:Destroy() end elseif table.find(c,i.ClassName) then if s.Pa.Invisible then i.Enabled=false end;if s.Pa.Destroy then i:Destroy() end elseif i:IsA("PostEffect") and s.O["No Camera Effects"] then i.Enabled=false elseif i:IsA("Explosion") then if s.E.Smaller then i.BlastPressure,i.BlastRadius=1,1 end;if s.E.Invisible then i.Visible=false end;if s.E.Destroy then i:Destroy() end elseif i:IsA("Clothing") or i:IsA("SurfaceAppearance") or i:IsA("BaseWrap") then if s.O["No Clothes"] then i:Destroy() end elseif i:IsA("BasePart") and not i:IsA("MeshPart") then if s.O["Low Quality Parts"] then i.Material=Enum.Material.Plastic;i.Reflectance=0 end elseif i:IsA("TextLabel") and i:IsDescendantOf(workspace) then if s.T.LowerQuality then i.Font=Enum.Font.SourceSans;i.TextScaled=false;i.RichText=false;i.TextSize=14 end;if s.T.Invisible then i.Visible=false end;if s.T.Destroy then i:Destroy() end elseif i:IsA("Model") then if s.O["Low Quality Models"] then i.LevelOfDetail=Enum.ModelLevelOfDetail.StreamingMesh end elseif i:IsA("MeshPart") then if s.MP.LowerQuality then i.Reflectance=0;i.Material=Enum.Material.Plastic end;if s.MP.Invisible then i.Transparency=1 end;if s.MP.NoTexture then i.TextureID="" end;if s.MP.NoMesh then i.MeshId="" end;if s.MP.Destroy then i:Destroy() end end end end;for _,v in ipairs(game:GetDescendants()) do d(v) end;game.DescendantAdded:Connect(function(v) task.wait(_G.LoadedWait or 1) d(v) end);task.spawn(function() if _G.S.O["Low Water Graphics"] then local t=workspace:FindFirstChildOfClass("Terrain")or workspace:WaitForChild("Terrain") t.WaterWaveSize=0;t.WaterWaveSpeed=0;t.WaterReflectance=0;t.WaterTransparency=0;if sethiddenproperty then pcall(sethiddenproperty,t,"Decoration",false) end end end);task.spawn(function() if _G.S.O["No Shadows"] then l.GlobalShadows=false;l.FogEnd=9e9;l.ShadowSoftness=0;if sethiddenproperty then pcall(sethiddenproperty,l,"Technology",2) end end end);task.spawn(function() if _G.S.O["Low Rendering"] then settings().Rendering.QualityLevel=Enum.QualityLevel.Level01;settings().Rendering.MeshPartDetailLevel=Enum.MeshPartDetailLevel.Level04 end end);task.spawn(function() if _G.S.O["Reset Materials"] then for _,v in pairs(m:GetChildren()) do v:Destroy() end;m.Use2022Materials=false end end);task.spawn(function() local x=_G.S.O["FPS Cap"] if x and setfpscap then setfpscap(tonumber(x) or 1e6) end end);task.spawn(function() if _G.S.O.ClearNilInstances and getnilinstances then for _,v in pairs(getnilinstances()) do pcall(v.Destroy,v) end end end);
+_G.I=_G.I or{};_G.S=_G.S or{P={["Ignore Me"]=true,["Ignore Others"]=true,["Ignore Tools"]=true},M={NoMesh=false,NoTexture=false,Destroy=false},I={Invisible=true,Destroy=false},E={Smaller=true,Invisible=false,Destroy=false},Pa={Invisible=true,Destroy=false},T={LowerQuality=false,Invisible=false,Destroy=false},MP={LowerQuality=true,Invisible=false,NoTexture=false,NoMesh=false,Destroy=false},O={["FPS Cap"]=true,["No Camera Effects"]=true,["No Clothes"]=true,["Low Water Graphics"]=true,["No Shadows"]=true,["Low Rendering"]=true,["Low Quality Parts"]=true,["Low Quality Models"]=true,["Reset Materials"]=true,["Lower Quality MeshParts"]=true,ClearNilInstances=false}};
+repeat task.wait()until game:IsLoaded()
+local p,l,m=game:GetService("Players"),game:GetService("Lighting"),game:GetService("MaterialService")
+local lp=p.LocalPlayer
+local c={"ParticleEmitter","Trail","Smoke","Fire","Sparkles"}
+local function f(i)
+ if i:IsDescendantOf(p)then return false end
+ if _G.S.P["Ignore Others"] and i:FindFirstAncestorWhichIsA("Model") and p:GetPlayerFromCharacter(i:FindFirstAncestorWhichIsA("Model"))then return false end
+ if _G.S.P["Ignore Me"] and lp.Character and i:IsDescendantOf(lp.Character)then return false end
+ if _G.S.P["Ignore Tools"] and (i:IsA("BackpackItem") or i:FindFirstAncestorWhichIsA("BackpackItem"))then return false end
+ for _,v in pairs(_G.I)do if i:IsDescendantOf(v)then return false end end
+ return true
+end
+local function d(i)
+ if not f(i)then return end
+ local s=_G.S
+ if i:IsA("DataModelMesh")then
+  if i:IsA("SpecialMesh")then
+   if s.M.NoMesh then i.MeshId=""end
+   if s.M.NoTexture then i.TextureId=""end
+  end
+  if s.M.Destroy then i:Destroy()end
+ elseif i:IsA("FaceInstance")then
+  if s.I.Invisible then i.Transparency=1 end
+  if s.I.Destroy then i:Destroy()end
+ elseif i:IsA("ShirtGraphic")then
+  if s.I.Invisible then i.Graphic=""end
+  if s.I.Destroy then i:Destroy()end
+ elseif table.find(c,i.ClassName)then
+  if s.Pa.Invisible then i.Enabled=false end
+  if s.Pa.Destroy then i:Destroy()end
+ elseif i:IsA("PostEffect")and s.O["No Camera Effects"]then i.Enabled=false
+ elseif i:IsA("Explosion")then
+  if s.E.Smaller then i.BlastPressure,i.BlastRadius=1,1 end
+  if s.E.Invisible then i.Visible=false end
+  if s.E.Destroy then i:Destroy()end
+ elseif i:IsA("Clothing")or i:IsA("SurfaceAppearance")or i:IsA("BaseWrap")then
+  if s.O["No Clothes"] then i:Destroy()end
+ elseif i:IsA("BasePart")and not i:IsA("MeshPart")then
+  if s.O["Low Quality Parts"] then i.Material=Enum.Material.Plastic i.Reflectance=0 end
+ elseif i:IsA("TextLabel")and i:IsDescendantOf(workspace)then
+  if s.T.LowerQuality then i.Font=Enum.Font.SourceSans i.TextScaled=false i.RichText=false i.TextSize=14 end
+  if s.T.Invisible then i.Visible=false end
+  if s.T.Destroy then i:Destroy()end
+ elseif i:IsA("Model")then
+  if s.O["Low Quality Models"] then i.LevelOfDetail=Enum.ModelLevelOfDetail.StreamingMesh end
+ elseif i:IsA("MeshPart")then
+  if s.MP.LowerQuality then i.Reflectance=0 i.Material=Enum.Material.Plastic end
+  if s.MP.Invisible then i.Transparency=1 end
+  if s.MP.NoTexture then i.TextureID="" end
+  if s.MP.NoMesh then i.MeshId="" end
+  if s.MP.Destroy then i:Destroy()end
+ end
+end
+for _,v in ipairs(game:GetDescendants())do d(v)end
+game.DescendantAdded:Connect(function(v) task.wait(_G.LoadedWait or 1) d(v)end)
+task.spawn(function() if _G.S.O["Low Water Graphics"]then local t=workspace:FindFirstChildOfClass("Terrain")or workspace:WaitForChild("Terrain") t.WaterWaveSize=0 t.WaterWaveSpeed=0 t.WaterReflectance=0 t.WaterTransparency=0 if sethiddenproperty then pcall(sethiddenproperty,t,"Decoration",false)end end end)
+task.spawn(function() if _G.S.O["No Shadows"]then l.GlobalShadows=false l.FogEnd=9e9 l.ShadowSoftness=0 if sethiddenproperty then pcall(sethiddenproperty,l,"Technology",2)end end end)
+task.spawn(function() if _G.S.O["Low Rendering"]then settings().Rendering.QualityLevel=Enum.QualityLevel.Level01 settings().Rendering.MeshPartDetailLevel=Enum.MeshPartDetailLevel.Level04 end end)
+task.spawn(function() if _G.S.O["Reset Materials"]then for _,v in pairs(m:GetChildren())do v:Destroy()end m.Use2022Materials=false end end)
+task.spawn(function() local x=_G.S.O["FPS Cap"] if x and setfpscap then setfpscap(tonumber(x)or 1e6)end end)
+task.spawn(function() if _G.S.O.ClearNilInstances and getnilinstances then for _,v in pairs(getnilinstances())do pcall(v.Destroy,v)end end end)
